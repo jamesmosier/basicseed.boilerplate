@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         sass: {
             dist: {
                 files: {
-                    'dist/css/basicseed.css': 'sass/app.scss'
+                    'dist/css/app.css': 'sass/app.scss'
                 }
             }
         },
@@ -32,19 +32,19 @@ module.exports = function(grunt) {
         cssmin: {
             combine: {
                 files: {
-                    'dist/css/basicseed.min.css': ['dist/css/basicseed.css']
+                    'dist/css/app.min.css': ['dist/css/app.css']
                 }
             }
         },
 
         //combine files like this: 'dist/js/output.js': ['js/input.js', 'js/input2.js']
-        uglify: {
-            scriptz: {
-                files: {
-                    'dist/js/main.js': 'js/main.js'
-                }
-            }
-        },
+        // uglify: {
+        //     scriptz: {
+        //         files: {
+        //             'dist/js/app.js': 'js/app.js'
+        //         }
+        //     }
+        // },
 
         copy: {
             main: {
@@ -52,11 +52,11 @@ module.exports = function(grunt) {
                     src: ['fonts/*'],
                     dest: 'dist/'
                 }, {
-                    src: ['dist/css/*'],
-                    dest: 'docs/_site/css/',
-                    flatten: true,
-                    filter: 'isFile',
-                    expand: true
+                    src: ['images/*'],
+                    dest: 'dist/images/'
+                }, {
+                    src: ['js/*.js'],
+                    dest: 'dist/js/'
                 }]
             },
         },
@@ -92,7 +92,7 @@ module.exports = function(grunt) {
         // https://github.com/gruntjs/grunt-contrib-watch
         watch: {
             all: {
-                files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'css/basicseed.css', 'views/*.html'],
+                files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'css/app.css', 'views/*.html'],
                 tasks: ['sass', 'cssmin', 'copy'],
                 options: {
                     livereload: true
@@ -100,7 +100,7 @@ module.exports = function(grunt) {
             },
             js: {
                 files: ['js/*.js'],
-                tasks: ['newer:jshint:all'],
+                tasks: ['jshint:all'],
                 options: {
                     livereload: true
                 }
@@ -109,7 +109,7 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('build', ['sass', 'cssmin', 'uglify', 'copy']);
+    grunt.registerTask('build', ['sass', 'cssmin', 'copy']);
     grunt.registerTask('default', ['build', 'connect', 'watch']);
 
 };

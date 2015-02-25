@@ -2,14 +2,17 @@ module.exports = function(grunt) {
     // Load Grunt tasks declared in the package.json file
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    //example taken from: http://thecrumb.com/2014/03/15/using-grunt-for-live-reload/
-    grunt.initConfig({
+    //Load in the build configuration file.
+    var userConfig = require( './build.config.js' );
+
+    //Give the Grunt plugins their instructions!
+    var taskConfig = {
 
         //https://github.com/gruntjs/grunt-contrib-connect
         connect: {
             server: {
                 options: {
-                    port: 1414,
+                    port: 3000,
                     base: '<%= build_dir %>',
                     // Change this to '0.0.0.0' to access the server from outside.
                     hostname: 'localhost',
@@ -23,7 +26,7 @@ module.exports = function(grunt) {
         sass: {
             dist: {
                 files: {
-                    'dist/css/app.css': 'sass/app.scss'
+                    'build/css/app.css': 'sass/app.scss'
                 }
             }
         },
@@ -32,7 +35,7 @@ module.exports = function(grunt) {
         cssmin: {
             combine: {
                 files: {
-                    'dist/css/app.min.css': ['dist/css/app.css']
+                    'build/css/app.min.css': ['build/css/app.css']
                 }
             }
         },
@@ -50,13 +53,16 @@ module.exports = function(grunt) {
             main: {
                 files: [{
                     src: ['fonts/*'],
-                    dest: 'dist/'
+                    dest: 'build/'
                 }, {
                     src: ['images/*'],
-                    dest: 'dist/images/'
+                    dest: 'build/images/'
                 }, {
                     src: ['js/*.js'],
-                    dest: 'dist/js/'
+                    dest: 'build/js/'
+                },{
+                    src: ['*.html'],
+                    dest: 'build/'
                 }]
             },
         },
@@ -74,25 +80,15 @@ module.exports = function(grunt) {
             }
         },
 
-        // Empties folders to start fresh
-        clean: {
-            dist: {
-                files: [{
-                    dot: true,
-                    src: [
-                        '.tmp',
-                        '<%= yeoman.dist %>/{,*/}*',
-                        '!<%= yeoman.dist %>/.git{,*/}*'
-                    ]
-                }]
-            },
-            server: '.tmp'
-        },
+        //Empties folders to start fresh
+        clean: [
+            '<%= build_dir %>'
+        ],
 
         // https://github.com/gruntjs/grunt-contrib-watch
         watch: {
             all: {
-                files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'css/app.css', 'views/*.html'],
+                files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'build/css/app.css', 'views/*.html'],
                 tasks: ['sass', 'cssmin', 'copy'],
                 options: {
                     livereload: true
@@ -107,7 +103,9 @@ module.exports = function(grunt) {
             }
         }
 
-    });
+    };
+
+    grunt.initConfig( grunt.util._.extend( taskConfig, userConfig ) );
 
     grunt.registerTask('build', ['sass', 'cssmin', 'copy']);
     grunt.registerTask('default', ['build', 'connect', 'watch']);

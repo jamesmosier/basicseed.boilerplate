@@ -7,7 +7,11 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="build/css/app.css">                
+    <% styles.forEach(function(file) { %>
+      <link rel="stylesheet" type="text/css" href="<%= file %>" />
+    <% }); %>
+
+    <!--<link rel="stylesheet" href="build/css/app.css">    -->
 </head>
 <body>
     <div class="container">
@@ -16,7 +20,11 @@
 
     </div>
 
+    <% scripts.forEach(function(file) { %>
+      <script type="text/javascript" src="<%= file %>"></script>
+    <% }); %>
+
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
-    <script src="build/js/app.js"></script>
+    <!--<script src="build/js/app.js"></script>-->
 </body>
 </html>

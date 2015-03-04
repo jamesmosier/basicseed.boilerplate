@@ -149,7 +149,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index', 'imagemin', changelog]);
+  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index', 'imagemin', 'changelog']);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 
 

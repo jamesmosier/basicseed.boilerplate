@@ -61,8 +61,11 @@ module.exports = function(grunt) {
           src: ['images/*'],
           dest: 'build/'
         }, {
+          expand: true,
+          flatten: true,
           src: ['js/*.js'],
-          dest: 'build/'
+          dest: 'build/js/',
+          filter: 'isFile'
         }, {
           src: ['*.html'],
           dest: 'build/'
@@ -92,7 +95,7 @@ module.exports = function(grunt) {
     watch: {
       all: {
         files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'build/css/app.css', 'views/*.html'],
-        tasks: ['sass', 'cssmin', 'copy'],
+        tasks: ['sass', 'copy'],
         options: {
           livereload: true
         }
@@ -143,13 +146,41 @@ module.exports = function(grunt) {
       options: {
         //no options yet
       }
+    },
+
+    // Reads HTML for usemin blocks to enable smart builds that automatically
+    // concat, minify and revision files. Creates configurations in memory so
+    // additional tasks can operate on them
+    useminPrepare: {
+      html: 'index.html',
+      options: {
+        dest: '<%= build_dir %>',
+        flow: {
+          html: {
+            steps: {
+              js: [],
+              css: ['cssmin']
+            },
+            post: {}
+          }
+        }
+      }
+    },
+
+    // Performs rewrites based on filerev and the useminPrepare configuration
+    usemin: {
+      html: ['<%= build_dir %>/{,*/}*.html'],
+      css: ['<%= build_dir %>/css/{,*/}*.css'],
+      options: {
+        assetsDirs: ['<%= build_dir %>','<%= build_dir %>/images']
+      }
     }
 
   };
 
   grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index', 'imagemin', 'changelog']);
+  grunt.registerTask('build', ['useminPrepare', 'sass', 'cssmin', 'copy', 'index', 'imagemin', 'changelog', 'usemin']);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 
 

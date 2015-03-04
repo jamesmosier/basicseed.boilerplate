@@ -38,19 +38,19 @@ module.exports = function(grunt) {
     cssmin: {
       combine: {
         files: {
-          'build/css/app.min.css': ['build/css/app.css']
+          'build/css/app.css': ['build/css/app.css']
         }
       }
     },
 
     //combine files like this: 'dist/js/output.js': ['js/input.js', 'js/input2.js']
-    // uglify: {
-    //     scriptz: {
-    //         files: {
-    //             'dist/js/app.js': 'js/app.js'
-    //         }
-    //     }
-    // },
+    uglify: {
+        scriptz: {
+            files: {
+                'build/js/app.js': 'js/app.js'
+            }
+        }
+    },
 
     copy: {
       main: {
@@ -149,7 +149,8 @@ module.exports = function(grunt) {
 
   grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index', 'imagemin', 'changelog']);
+  grunt.registerTask('build', ['sass', 'copy', 'index', 'imagemin', 'changelog']);
+  grunt.registerTask('prod', ['sass', 'cssmin', 'uglify', 'copy', 'index', 'imagemin', 'changelog']);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 
 

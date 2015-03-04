@@ -5,6 +5,9 @@ module.exports = function(grunt) {
   //Load in the build configuration file.
   var userConfig = require('./build.config.js');
 
+  //Show time of execution for the tasks
+  require('time-grunt')(grunt);
+
   //Give the Grunt plugins their instructions!
   var taskConfig = {
 
@@ -125,11 +128,28 @@ module.exports = function(grunt) {
       }
     },
 
+    imagemin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'images',
+          src: '**/*.{png,jpg,jpeg,gif}',
+          dest: 'build/images/'
+        }]
+      }
+    },
+
+    changelog: {
+      options: {
+        //no options yet
+      }
+    }
+
   };
 
   grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index']);
+  grunt.registerTask('build', ['sass', 'cssmin', 'copy', 'index', 'imagemin', changelog]);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 
 
@@ -148,6 +168,7 @@ module.exports = function(grunt) {
   function filterForCSS(files) {
     return files.filter(function(file) {
       return file.match(/\.css$/);
+      //return file.match(/^(?:(?!.min\.css$).)*\.css$/);
     });
   }
 

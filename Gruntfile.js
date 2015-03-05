@@ -1,3 +1,5 @@
+//some inspiration for a verbose Gruntfile: https://gist.github.com/yanatan16/6531028
+
 module.exports = function(grunt) {
   // Load Grunt tasks declared in the package.json file
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -10,6 +12,27 @@ module.exports = function(grunt) {
 
   //Give the Grunt plugins their instructions!
   var taskConfig = {
+
+    //Increments the version number, etc.
+    bump: {
+      options: {
+        files: [
+          "package.json",
+          "bower.json"
+        ],
+        commit: false,
+        commitMessage: 'chore(release): v%VERSION%',
+        commitFiles: [
+          "package.json",
+          "client/bower.json"
+        ],
+        createTag: false,
+        tagName: 'v%VERSION%',
+        tagMessage: 'Version %VERSION%',
+        push: false,
+        pushTo: 'origin'
+      }
+    },
 
     //https://github.com/gruntjs/grunt-contrib-connect
     connect: {
@@ -45,13 +68,14 @@ module.exports = function(grunt) {
 
     //combine files like this: 'dist/js/output.js': ['js/input.js', 'js/input2.js']
     uglify: {
-        scriptz: {
-            files: {
-                'build/js/app.js': 'js/app.js'
-            }
+      scriptz: {
+        files: {
+          'build/js/app.js': 'js/app.js'
         }
+      }
     },
 
+    //copy files from development dir to the build dir
     copy: {
       main: {
         files: [{
@@ -70,6 +94,7 @@ module.exports = function(grunt) {
       },
     },
 
+    //lint JS files & display output in terminal
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -83,12 +108,12 @@ module.exports = function(grunt) {
       }
     },
 
-    //Empties folders to start fresh
+    //Empties the build folder to start fresh. Use the command: grunt clean
     clean: [
       '<%= build_dir %>'
     ],
 
-    // https://github.com/gruntjs/grunt-contrib-watch
+    // watch for changes in any of the files below, which will trigger a rebuild and reload of page
     watch: {
       all: {
         files: ['*.html', 'sass/*.scss', 'sass/**/*.scss', 'build/css/app.css', 'views/*.html'],
@@ -128,6 +153,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //attempt to "minify" any images as much as possible, to reduce size/load time
     imagemin: {
       dist: {
         files: [{
@@ -139,6 +165,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //create and add to a changelog
     changelog: {
       options: {
         //no options yet
@@ -149,7 +176,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-  grunt.registerTask('build', ['sass', 'copy', 'index', 'imagemin', 'changelog']);
+  grunt.registerTask('build', ['sass', 'copy', 'index', 'imagemin', 'bump', 'changelog']);
   grunt.registerTask('prod', ['sass', 'cssmin', 'uglify', 'copy', 'index', 'imagemin', 'changelog']);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 

@@ -1,7 +1,7 @@
 {
   "name": "basicseed.boilerplate",
   "private": false,
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "basicseed.boilerplate for projects using grunt, bower, fontawesome, and SASS",
   "repository": "https://github.com/jamez14/basicseed.boilerplate",
   "license": "MIT",
